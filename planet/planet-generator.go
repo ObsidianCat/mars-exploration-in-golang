@@ -5,20 +5,29 @@ import (
 	"strings"
 )
 
+func stringIntoInt(st string) int {
+	result, _ := strconv.ParseInt(st, 10, 0)
+	return int(result)
+}
+
 // Generate plant - matrix map
 func MapGenerator(line string) [][]int {
-	dimensions := strings.Fields(line)
-	xColumns, _ := strconv.ParseInt(dimensions[0], 10, 0)
-	yRows, _ := strconv.ParseInt(dimensions[1], 10, 0)
-	grid := [][]int{}
-	for i := 0; i < int(xColumns); i++ {
-		//create column
-		curRow := make([]int, int(yRows))
+	//We start from 0 to the number including. So number 5 means that there will be 6 columns
 
-		for j := 0; j < int(yRows); j++ {
+	dimensions := strings.Fields(line)
+	xColumns := stringIntoInt(dimensions[1])
+	yRows := stringIntoInt(dimensions[0])
+	grid := [][]int{}
+	for i := 0; i <= xColumns; i++ {
+		//create row
+
+		// I add one to num of cell, because value represent length of array
+		curRow := make([]int, yRows+1)
+
+		for j := 0; j <= yRows; j++ {
 			curRow[j] = 0
 		}
-		//create row
+		//append row
 		grid = append(grid, curRow)
 	}
 

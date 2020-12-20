@@ -18,23 +18,23 @@ type Robot struct {
 	sides     [4]string
 }
 
-func (r Robot) getFormattedPosition() string {
+func (r *Robot) getFormattedPosition() string {
 	return fmt.Sprintf("%s %s", strconv.Itoa(r.xPosition), strconv.Itoa(r.yPosition))
 }
-func (r Robot) getDirection() string {
+func (r *Robot) getDirection() string {
 	return r.direction
 }
 
-func (r Robot) rotate(direction string) string {
+func (r *Robot) rotate(turnSide string) string {
 	modifier := 0
-	if direction == DirectionLeft {
+	if turnSide == DirectionLeft {
 		modifier = -1
-	} else if direction == DirectionRight {
+	} else if turnSide == DirectionRight {
 		modifier = 1
 	}
 	var possible int
 	for i := 0; i < len(sides); i++ {
-		if sides[i] == direction {
+		if sides[i] == r.direction {
 			possible = i + modifier
 			break
 		}
@@ -71,19 +71,21 @@ func (r Robot) calcNextPosition() (int, int) {
 	return column, row
 }
 
-func (r Robot) setPosition(x, y int) {
+func (r *Robot) setPosition(x, y int) {
 	r.xPosition = x
 	r.yPosition = y
 }
 
 // Calculate full path for the Robot
 func CalculatePath(planetMap [][]int, robot Robot, directions string) string {
+
 	rotationOnly := false
 	for _, curChar := range directions {
 		charString := string(curChar)
 		if charString == DirectionRight || charString == DirectionLeft {
 			robot.rotate(charString)
 		} else if !rotationOnly {
+
 			//It is moving direction and robot can move (not frightened by smell sign)
 			column, row := robot.calcNextPosition()
 			isBeyondMap := false
@@ -102,7 +104,7 @@ func CalculatePath(planetMap [][]int, robot Robot, directions string) string {
 				rotationOnly = true
 				continue
 			}
-			robot.setPosition(row, column)
+			robot.setPosition(column, row)
 		}
 
 	}
