@@ -4,22 +4,24 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/ObsidianCat/mars-exploration-in-golang/planet"
+	"github.com/ObsidianCat/mars-exploration-in-golang/robot"
+
 	//"io"
 	"os"
 	//"strings"
 )
 
 const (
-	MAP = iota +1
+	MAP = iota + 1
 	POSITION
 	DIRECTIONS
 )
 
-
 func main() {
 	currentInputState := MAP
-	// To create dynamic array
-	//arr := make([]string, 0)
+	var currentMap [][]int
+	var currentRobot robot.Robot
+
 	scanner := bufio.NewScanner(os.Stdin)
 
 	fmt.Println("Provide map dimensions")
@@ -35,18 +37,18 @@ func main() {
 
 		switch currentInputState {
 		case MAP:
-			currentInputState = POSITION
 			planet.MapGenerator(text)
 			fmt.Println("Provide first robot initial position'")
-
+			currentInputState = POSITION
 
 		case POSITION:
-			currentInputState = DIRECTIONS
+			currentRobot = robot.AssembleRobot(text)
 			fmt.Println("Provide path instructions")
-
+			currentInputState = DIRECTIONS
 
 		case DIRECTIONS:
 			fmt.Println("This robot last known position is")
+			fmt.Println(robot.CalculatePath(currentMap, currentRobot, text))
 
 			currentInputState = POSITION
 			fmt.Println("Provide next robot initial position")
@@ -55,6 +57,4 @@ func main() {
 		fmt.Println(text)
 
 	}
-	// Use collected inputs
-	//fmt.Println(arr)
 }
