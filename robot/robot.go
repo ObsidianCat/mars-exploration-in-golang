@@ -19,7 +19,7 @@ type Robot struct {
 }
 
 func (r Robot) getFormattedPosition() string {
-	return "x position: " + strconv.Itoa(r.xPosition) + ", y posiion: " + strconv.Itoa(r.yPosition)
+	return fmt.Sprintf("%s %s", strconv.Itoa(r.xPosition), strconv.Itoa(r.yPosition))
 }
 func (r Robot) getDirection() string {
 	return r.direction
@@ -76,15 +76,37 @@ func (r Robot) setPosition(x, y int) {
 	r.yPosition = y
 }
 
-// Calculate ful path for the Robot
+// Calculate full path for the Robot
 func CalculatePath(planetMap [][]int, robot Robot, directions string) string {
-	for i, char := range directions {
-		fmt.Println(i, " => ", string(char))
-		//if char == DirectionRight || char == DirectionLeft {
-		//
-		//}
+	rotationOnly := false
+	for _, curChar := range directions {
+		charString := string(curChar)
+		if charString == DirectionRight || charString == DirectionLeft {
+			robot.rotate(charString)
+		} else if !rotationOnly {
+			//It is moving direction and robot can move (not frightened by smell sign)
+			column, row := robot.calcNextPosition()
+			isBeyondMap := false
+			if column < 0 || row < 0 || column >= len(planetMap[0]) || row >= len(planetMap) {
+				isBeyondMap = true
+			}
+			if isBeyondMap {
+				//leave scent
+				planetMap[robot.yPosition][robot.xPosition] = 1
+				return fmt.Sprintf("%s %s LOST", robot.getFormattedPosition(), robot.getDirection())
+			}
+
+			nextHasScentTrace := planetMap[column][row] == 1
+			if nextHasScentTrace {
+				//Stopped by scent, no move movements, only rotation
+				rotationOnly = true
+				continue
+			}
+			robot.setPosition(row, column)
+		}
+
 	}
-	return "It will return ${robot.getFormattedPosition()} ${robot.getDirection()} "
+	return fmt.Sprintf("%s %s", robot.getFormattedPosition(), robot.getDirection())
 }
 
 func AssembleRobot(text string) Robot {
@@ -92,7 +114,6 @@ func AssembleRobot(text string) Robot {
 	x, _ := strconv.Atoi(dimensions[0])
 	y, _ := strconv.Atoi(dimensions[1])
 
-	fmt.Println(dimensions)
 	newRobot := Robot{direction: dimensions[2],
 		xPosition: x,
 		yPosition: y,
