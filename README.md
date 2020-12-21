@@ -1,6 +1,6 @@
 # Console application mars-exploration-in-golang
 It is a hands-on leanrign project based on one of my other repositories - [Mars-exploration](https://github.com/ObsidianCat/Mars-exploration).  
-### Verify that golang is installed <br>
+### Verify golang installation <br>
 ``go version``
 
 ### Start the app <br>
