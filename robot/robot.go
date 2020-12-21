@@ -9,20 +9,17 @@ import (
 const DirectionRight string = "R"
 const DirectionLeft string = "L"
 
+// TODO iota enum?
 var sides = [4]string{"N", "E", "S", "W"}
 
 type Robot struct {
 	xPosition int
 	yPosition int
 	direction string
-	sides     [4]string
 }
 
 func (r *Robot) getFormattedPosition() string {
 	return fmt.Sprintf("%s %s", strconv.Itoa(r.xPosition), strconv.Itoa(r.yPosition))
-}
-func (r *Robot) getDirection() string {
-	return r.direction
 }
 
 func (r *Robot) rotate(turnSide string) string {
@@ -33,8 +30,8 @@ func (r *Robot) rotate(turnSide string) string {
 		modifier = 1
 	}
 	var possible int
-	for i := 0; i < len(sides); i++ {
-		if sides[i] == r.direction {
+	for i, side := range sides {
+		if side == r.direction {
 			possible = i + modifier
 			break
 		}
@@ -95,7 +92,7 @@ func CalculatePath(planetMap [][]int, robot Robot, directions string) string {
 			if isBeyondMap {
 				//leave scent
 				planetMap[robot.yPosition][robot.xPosition] = 1
-				return fmt.Sprintf("%s %s LOST", robot.getFormattedPosition(), robot.getDirection())
+				return fmt.Sprintf("%s %s LOST", robot.getFormattedPosition(), robot.direction)
 			}
 
 			nextHasScentTrace := planetMap[column][row] == 1
@@ -108,10 +105,10 @@ func CalculatePath(planetMap [][]int, robot Robot, directions string) string {
 		}
 
 	}
-	return fmt.Sprintf("%s %s", robot.getFormattedPosition(), robot.getDirection())
+	return fmt.Sprintf("%s %s", robot.getFormattedPosition(), robot.direction)
 }
 
-func AssembleRobot(text string) Robot {
+func New(text string) Robot {
 	dimensions := strings.Fields(text)
 	x, _ := strconv.Atoi(dimensions[0])
 	y, _ := strconv.Atoi(dimensions[1])
@@ -119,7 +116,6 @@ func AssembleRobot(text string) Robot {
 	newRobot := Robot{direction: dimensions[2],
 		xPosition: x,
 		yPosition: y,
-		sides:     sides,
 	}
 
 	return newRobot

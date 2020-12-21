@@ -2,20 +2,17 @@ package robot
 
 import (
 	"github.com/ObsidianCat/mars-exploration-in-golang/planet"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestAssembleRobot(t *testing.T) {
-	robot := AssembleRobot("1 2 E")
-	if robot.xPosition != 1 {
-		t.Errorf("Robot x position expected: 1, actual %d", robot.xPosition)
-	}
-	if robot.yPosition != 2 {
-		t.Errorf("Robot x position expected: 1, actual %d", robot.yPosition)
-	}
-	if robot.direction != "E" {
-		t.Errorf("Robot x position expected: E, actual %s", robot.direction)
-	}
+	robot := New("1 2 E")
+	assert := assert.New(t)
+
+	assert.Equal(1, robot.xPosition, "Robot x position")
+	assert.Equal(2, robot.yPosition, "Robot y position")
+	assert.Equal("E", robot.direction, "Robot direction")
 }
 
 var calculatePathTestCases = []struct {
@@ -33,17 +30,16 @@ var calculatePathTestCases = []struct {
 }
 
 func TestCalculatePath(t *testing.T) {
-	for _, tt := range calculatePathTestCases {
-		t.Run(tt.name, func(t *testing.T) {
-			robot := AssembleRobot(tt.robotStartPosition)
-			planetMap := planet.MapGenerator(tt.planetSize)
-			if tt.scentModifier != nil {
-				planetMap[tt.scentModifier[0]][tt.scentModifier[1]] = 1
+
+	for _, testCase := range calculatePathTestCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			robot := New(testCase.robotStartPosition)
+			planetMap := planet.MapGenerator(testCase.planetSize)
+			if testCase.scentModifier != nil {
+				planetMap[testCase.scentModifier[0]][testCase.scentModifier[1]] = 1
 			}
-			result := CalculatePath(planetMap, robot, tt.moveDirections)
-			if result != tt.expected {
-				t.Errorf("Robot final position %s does not match expected position %s", result, tt.expected)
-			}
+			result := CalculatePath(planetMap, robot, testCase.moveDirections)
+			assert.Equal(t, testCase.expected, result, testCase.name)
 		})
 	}
 }

@@ -42,7 +42,7 @@ func main() {
 			currentInputState = POSITION
 
 		case POSITION:
-			currentRobot = robot.AssembleRobot(text)
+			currentRobot = robot.New(text)
 			fmt.Println("Provide path instructions")
 			currentInputState = DIRECTIONS
 

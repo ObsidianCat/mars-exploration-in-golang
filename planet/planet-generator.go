@@ -20,13 +20,9 @@ func MapGenerator(line string) [][]int {
 	grid := [][]int{}
 	for i := 0; i <= xColumns; i++ {
 		//create row
-
 		// I add one to num of cell, because value represent length of array
 		curRow := make([]int, yRows+1)
 
-		for j := 0; j <= yRows; j++ {
-			curRow[j] = 0
-		}
 		//append row
 		grid = append(grid, curRow)
 	}
